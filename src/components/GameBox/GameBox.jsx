@@ -1,6 +1,6 @@
 import React from "react";
 import "./gameBox.style.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const allPossibleAnswers = [
   [1, 2, 3],
@@ -13,77 +13,116 @@ const allPossibleAnswers = [
   [3, 5, 7],
 ];
 
-
-
 function GameBox() {
   const [currentPlayer, setcurrentPlayer] = useState("X");
   const [playerXResult, setPlayerXResult] = useState([]);
   const [playerOResult, setPlayerOResult] = useState([]);
+  const [isWinner, setIsWinner] = useState(false);
+  const [winnerPlayer, setWinnerPlayer] = useState("");
 
-const checkAnswers = (playerAnswers) => {
-    for( correct of allPossibleAnswers) {
-
-        
-
-
-        if(playerAnswers && )
+  const checkAnswers = (userArr) => {
+    let isWinner = false;
+    for (let item of allPossibleAnswers) {
+      isWinner = item.every((el) => userArr.includes(el));
+      if (isWinner) {
+        setIsWinner(true);
+        setWinnerPlayer(currentPlayer);
+        break;
+      }
     }
-}
-
+    return isWinner;
+  };
 
   const onClickHandler = (id) => {
-    if (currentPlayer === "X") {
-      setPlayerXResult([...playerXResult, id]);
-      setcurrentPlayer("O");
-    } else {
-      setPlayerOResult([...playerOResult, id]);
-      setcurrentPlayer("X");
+    if (!isWinner) {
+      if (currentPlayer === "X") {
+        setPlayerXResult([...playerXResult, id]);
+
+        checkAnswers([...playerXResult, id]);
+
+        setcurrentPlayer("O");
+      } else {
+        setPlayerOResult([...playerOResult, id]);
+        checkAnswers([...playerOResult, id]);
+        setcurrentPlayer("X");
+      }
+      console.log("current", currentPlayer);
+      console.log("X result", playerXResult);
+      console.log("O result", playerOResult);
     }
-    console.log("current", currentPlayer);
-    console.log("X result", playerXResult);
-    console.log("O result", playerOResult);
   };
+
+  const checkCellValue = (id) => {
+    if (playerXResult.includes(id)) {
+      return "x";
+    } else if (playerOResult.includes(id)) {
+      return "o";
+    } else {
+      return;
+    }
+  };
+
+  useEffect(() => {}, [isWinner]);
 
   return (
     <div className="game__box--container">
       <div className="game__box">
         <div
-          className="game__box--cell"
+          className={`game__box-cell ${checkCellValue(1)}`}
           onClick={() => onClickHandler(1)}
-        ></div>
+        >
+          {checkCellValue(1)}
+        </div>
         <div
-          className="game__box--cell"
+          className={`game__box-cell ${checkCellValue(2)}`}
           onClick={() => onClickHandler(2)}
-        ></div>
+        >
+          {checkCellValue(2)}
+        </div>
         <div
-          className="game__box--cell"
+          className={`game__box-cell ${checkCellValue(3)}`}
           onClick={() => onClickHandler(3)}
-        ></div>
+        >
+          {checkCellValue(3)}
+        </div>
         <div
-          className="game__box--cell"
+          className={`game__box-cell ${checkCellValue(4)}`}
           onClick={() => onClickHandler(4)}
-        ></div>
+        >
+          {checkCellValue(4)}
+        </div>
         <div
-          className="game__box--cell"
+          className={`game__box-cell ${checkCellValue(5)}`}
           onClick={() => onClickHandler(5)}
-        ></div>
+        >
+          {checkCellValue(5)}
+        </div>
         <div
-          className="game__box--cell"
+          className={`game__box-cell ${checkCellValue(6)}`}
           onClick={() => onClickHandler(6)}
-        ></div>
+        >
+          {checkCellValue(6)}
+        </div>
         <div
-          className="game__box--cell"
+          className={`game__box-cell ${checkCellValue(7)}`}
           onClick={() => onClickHandler(7)}
-        ></div>
+        >
+          {checkCellValue(7)}
+        </div>
         <div
-          className="game__box--cell"
+          className={`game__box-cell ${checkCellValue(8)}`}
           onClick={() => onClickHandler(8)}
-        ></div>
+        >
+          {checkCellValue(8)}
+        </div>
         <div
-          className="game__box--cell"
+          className={`game__box-cell ${checkCellValue(9)}`}
           onClick={() => onClickHandler(9)}
-        ></div>
+        >
+          {checkCellValue(9)}
+        </div>
       </div>
+      {isWinner && <h1>Winner is {winnerPlayer}</h1>}
     </div>
   );
 }
